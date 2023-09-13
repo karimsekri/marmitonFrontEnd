@@ -1,6 +1,5 @@
 const app = document.querySelector('#app') as HTMLDivElement;
 
-
 const divTitre = document.createElement("div") as HTMLDivElement;
 const h1Titre = document.createElement("h1") as HTMLHeadingElement;
 h1Titre.setAttribute("id", "titreDePage");
@@ -81,17 +80,40 @@ const formData : IFormData[] = [
 ]
 
 
-InitPage();
+//InitPage();
 
 async function InitPage() {
-    const res = await fetch("http://localhost:3030/hello");
+    const res = await fetch("http://localhost:3030/findAll");
     const messages  = await res.text();
     console.log(messages);
 }
 
+bouttonAjouter.addEventListener("click", () =>{
+    const inputName = document.querySelector("#inputName") as HTMLInputElement;
+    const lienImage = document.querySelector("#lienImage") as HTMLInputElement;
+    const duree = document.querySelector("#duree") as HTMLInputElement;
+    const note = document.querySelector("#note") as HTMLInputElement;
+    
+    creatRowRecette(inputName.value, lienImage.value, duree.value, note.value);
+});
+
+async function creatRowRecette(nom:string, lienImage:string, duree:string, note:string) {
+    try {
+        const res = await fetch(`http://localhost:3030/add/${nom}/${lienImage}/${duree}/${note}`)
+        const messages  = await res.text()
+        console.log(JSON.parse(messages))  
+        
+        const box = document.createElement("div") as HTMLDivElement; 
+        box.classList.add("boxResultRecette");
+    }
+    catch(e){
+        console.log('err', e)
+    }
+}
 
 formData.forEach( (data, i) => {
     const box = document.createElement("div") as HTMLDivElement;
+    box.classList.add("boxInput");
     box.style.display = "flex";
     box.style.flexDirection = "column";
     box.style.justifyContent = "space-evenly";
