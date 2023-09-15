@@ -93,43 +93,22 @@ const formData : IFormData[] = [
 InitPage();
 
 async function InitPage() {
-    const res = await fetch("http://localhost:3030/findAll");
-    const messages  = await res.text();
-    const myResult = JSON.parse(messages);
-
+    const res = await fetch("http://localhost:3030/recettes");
+    const myResult  = await res.json();
+   
     myResult.forEach((data) => {
         const myDivResult = document.createElement("div") as HTMLDivElement; 
-        myDivResult.classList.add("boxResultRecette");
-        myDivResult.style.display = "flex";
-        myDivResult.style.flexDirection = "row";
-        myDivResult.style.border ="1px";
-        myDivResult.style.borderStyle="solid";
-        myDivResult.style.borderColor="black";
-        myDivResult.style.marginBottom = "10px";
-
+        myDivResult.classList.add("myDivResult");
         
         const myDivImage = document.createElement("div") as HTMLDivElement;
-        myDivImage.style.width = "50%";
-        myDivImage.style.margin = "10px";
-
-        const boxData = document.createElement("div") as HTMLDivElement; 
-        boxData.classList.add("divBoxData");
-        boxData.style.display = "flex";
-        boxData.style.flexDirection = "column";
-        boxData.style.width = "50%";
-        boxData.style.margin = "10px";
-        boxData.style.textAlign = "left";
-
-        // boxData.style.border ="1px";
-        // boxData.style.borderStyle="solid";
-        // boxData.style.borderColor="red";
+        myDivImage.classList.add("myDivImage");
         
-
+        const boxData = document.createElement("div") as HTMLDivElement; 
+        boxData.classList.add("divBoxData"); 
+       
         const labelNonRecetteResult =  document.createElement("label") as HTMLLabelElement;
-        labelNonRecetteResult.innerHTML = data.nameRecette;
-        labelNonRecetteResult.style.fontWeight = "bold";
-        labelNonRecetteResult.style.fontSize = "60px";
-        labelNonRecetteResult.style.marginBottom = "20px";
+        labelNonRecetteResult.classList.add("labelNonRecetteResult");
+        labelNonRecetteResult.innerHTML = data.nameRecette;       
 
         const labelNoteRecetteResult =  document.createElement("label") as HTMLLabelElement;
         labelNoteRecetteResult.innerHTML = "Note : " + data.noteRecette;
@@ -138,23 +117,16 @@ async function InitPage() {
         labelDureeRecetteResult.innerHTML = "Durée : " + data.dureeRecette + "  minutes"; 
 
         const imageRecetteResult = document.createElement("img") as HTMLImageElement;
-        imageRecetteResult.src = data.lienImageRecette;
-        imageRecetteResult.style.width = "150px";
-        imageRecetteResult.style.height = "150px";
+        imageRecetteResult.classList.add("imageRecetteResult");
+        imageRecetteResult.src = data.lienImageRecette;       
         
         myDivImage.appendChild(imageRecetteResult);
-
         boxData.appendChild(labelNonRecetteResult);
         boxData.appendChild(labelNoteRecetteResult);
-        boxData.appendChild(labelDureeRecetteResult);
-        
+        boxData.appendChild(labelDureeRecetteResult);        
         myDivResult.appendChild(boxData);
         myDivResult.appendChild(myDivImage);
-        
-
-
         app.appendChild(myDivResult);
-
     })
 }
 
@@ -164,75 +136,80 @@ bouttonAjouter.addEventListener("click", async () =>{
     const duree = document.querySelector("#duree") as HTMLInputElement;
     const note = document.querySelector("#note") as HTMLInputElement;
     
-    await creatRowRecette(inputName.value, lienImage.value, duree.value, note.value);
-    InitPage();
+    await creatRowRecette(inputName.value, lienImage.value, parseInt(duree.value), parseInt(note.value));
+    
 });
 
-async function creatRowRecette(nom:string, lienImage:string, duree:string, note:string) {
+async function creatRowRecette(nom:string, lienImage:string, duree:number, note:number) {
     try {
-        const res = await fetch(`http://localhost:3030/add/${nom}/${lienImage.replaceAll("/", `%2F`)}/${duree}/${note}`)
-        const messages  = await res.text()
-        //console.log(JSON.parse(messages)) 
-        let messageJson = JSON.parse(messages); 
+        const res = await fetch(`http://localhost:3030/recettes`, {
+            headers: new Headers({
+              "Content-Type": "application/json",
+            }),
+            method: "POST",
+            body: JSON.stringify({
+              name: nom,
+              lienImage: lienImage,
+              duree: duree,
+              note:note
+            }),
+          })
+          console.log("res", res)
+        const messageJson  = await res.json()
+        console.log("messageJson",messageJson)
         
-        // const box = document.createElement("div") as HTMLDivElement; 
-        // box.classList.add("boxResultRecette");
-        // box.style.display = "flex";
-        // box.style.flexDirection = "column";
-        // box.style.border ="1px";
-        // box.style.borderStyle="solid";
-        // box.style.borderColor="black";
-
-
-
-        // const labelNonRecetteResult =  document.createElement("label") as HTMLLabelElement;
-        // labelNonRecetteResult.innerHTML = messageJson.nameRecette;
-
-        // const labelNoteRecetteResult =  document.createElement("label") as HTMLLabelElement;
-        // labelNoteRecetteResult.innerHTML = messageJson.noteRecette;
-
-        // const labelDureeRecetteResult =  document.createElement("label") as HTMLLabelElement;
-        // labelDureeRecetteResult.innerHTML = messageJson.dureeRecette;  
         
-        // const imageRecetteResult = document.createElement("img") as HTMLImageElement;
-        // imageRecetteResult.src = messageJson.lienImageRecette;
-        // imageRecetteResult.style.width = "150px";
-        // imageRecetteResult.style.height = "150px";
+        const myDivResult = document.createElement("div") as HTMLDivElement; 
+        myDivResult.classList.add("myDivResult");
 
+        const myDivImage = document.createElement("div") as HTMLDivElement;
+        myDivImage.classList.add("myDivImage");
+        
+        const boxData = document.createElement("div") as HTMLDivElement; 
+        boxData.classList.add("divBoxData"); 
+        
+        const labelNonRecetteResult =  document.createElement("label") as HTMLLabelElement;
+        labelNonRecetteResult.classList.add("labelNonRecetteResult");
+        labelNonRecetteResult.innerHTML = messageJson.nameRecette;
 
-        // box.appendChild(labelNonRecetteResult);
-        // box.appendChild(labelNoteRecetteResult);
-        // box.appendChild(labelDureeRecetteResult);
-        // box.appendChild(imageRecetteResult);
-        // app.appendChild(box)
+        const labelNoteRecetteResult =  document.createElement("label") as HTMLLabelElement;
+        labelNoteRecetteResult.innerHTML = "Note : " + messageJson.noteRecette;
+
+        const labelDureeRecetteResult =  document.createElement("label") as HTMLLabelElement;
+        labelDureeRecetteResult.innerHTML = "Durée : " + messageJson.dureeRecette + "  minutes";  
+        
+        const imageRecetteResult = document.createElement("img") as HTMLImageElement;
+        imageRecetteResult.classList.add("imageRecetteResult");
+        imageRecetteResult.src = messageJson.lienImageRecette;
+        
+        boxData.appendChild(labelNonRecetteResult);
+        boxData.appendChild(labelNoteRecetteResult);
+        boxData.appendChild(labelDureeRecetteResult);
+        myDivImage.appendChild(imageRecetteResult);
+        myDivResult.appendChild(boxData);
+        myDivResult.appendChild(myDivImage);
+        app.appendChild(myDivResult)
     }
     catch(e){
         console.log('err', e)
     }
 }
 
-formData.forEach( (data, i) => {
+formData.forEach( (data) => {
     const box = document.createElement("div") as HTMLDivElement;
-    box.classList.add("boxInput");
-    box.style.display = "flex";
-    box.style.flexDirection = "column";
-    box.style.justifyContent = "space-evenly";
-    box.style.width = "45%";
+    box.classList.add("boxInputs");    
 
     const labelNom =  document.createElement("label") as HTMLLabelElement;
     labelNom.innerHTML = data.label;
     labelNom.style.margin = "10px";
 
     const input =  document.createElement("input") as HTMLInputElement;
+    input.classList.add("textInput");
     input.setAttribute("id", data.id);
     input.setAttribute("type", "text");
-    input.placeholder = data.placeholder
-    input.style.marginBottom = "10px";
-    input.style.marginTop = "10px";
-    
+    input.placeholder = data.placeholder     
 
     box.appendChild(labelNom)
     box.appendChild(input)
-
     divPlaceholders.appendChild(box)
 })

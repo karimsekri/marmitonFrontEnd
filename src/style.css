@@ -26,3 +26,46 @@ body {
 .divPlaceholders{
   display: flex;
 }
+
+.myDivResult{
+  display : flex;  
+  flex-direction : row;
+  border :1px;
+  border-style:solid;
+  border-color:black;
+  margin-bottom : 10px;
+}
+
+.myDivImage
+{
+  width:  50%;
+  margin: 10px;
+}
+.divBoxData{
+  display : flex;
+  flex-direction : column;
+  width : 50%;
+  margin : 10px;
+  text-align : left;
+}
+.labelNonRecetteResult{
+  font-weight : bold;
+  font-size : 60px;
+  margin-bottom : 20px;
+}
+
+.imageRecetteResult{
+  width : 150px;
+  height : 150px;
+}
+
+.boxInputs{
+  display : flex;
+  flex-Direction : column;
+  justify-content : space-evenly;
+  width : 45%;
+}
+.textInput{
+  margin-bottom:   10px;
+  margin-top : 10px;
+}
